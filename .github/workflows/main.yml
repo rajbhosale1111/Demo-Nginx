@@ -1,0 +1,36 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Build and push Docker image
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          docker build -t us-central1-docker.pkg.dev/avian-principle-451409-f8/demo-nginx/nginx:latest .
+          docker push us-central1-docker.pkg.dev/avian-principle-451409-f8/demo-nginx/nginx:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy nginx-service \
+            --image=us-central1-docker.pkg.dev/avian-principle-451409-f8/demo-nginx/nginx:latest \
+            --region=us-central1 \
+            --platform=managed \
+            --allow-unauthenticated \
+            --port=8080
