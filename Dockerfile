@@ -1,7 +1,7 @@
 FROM nginx:latest
 
 # Copy custom index.html
-COPY index.html /usr/share/nginx/html/index.html
+# COPY index.html /usr/share/nginx/html/index.html
 
 # Copy custom nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf
