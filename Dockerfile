@@ -1,9 +1,9 @@
 FROM nginx:latest
 
-# Copy the custom nginx.conf to the container
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy custom index.html to the NGINX default web directory
+COPY index.html /usr/share/nginx/html/index.html
 
-# Expose port 8080 to match Cloud Run’s expected port
+# Expose port 8080 for Cloud Run
 EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
